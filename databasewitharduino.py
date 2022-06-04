@@ -1,20 +1,18 @@
 import serial
 import time
-import requests
-import json
 import psycopg2
 
-#firebase_url = 'https://arduino-project-3ee2b-default-rtdb.firebaseio.com/'
+
 ser = serial.Serial('COM6', 9600, timeout=0)
 conn = psycopg2.connect(database="GorselProg3", user="postgres",
-                        password='bzc96', host='127.0.0.1', port='5432')
+                        password='', host='127.0.0.1', port='5432')
 
 cur = conn.cursor()
 fixed_interval = 1
 while 1:
     try:
         data = ser.readline()
-        # print(temperature_c)
+
         datastr = str(data)
         x = datastr.replace("b'", " ")
         repdatastr = x[: -5]
@@ -23,8 +21,7 @@ while 1:
         humstart = repdatastr.startswith(" Hum")
         lightstart = repdatastr.startswith(" Light")
         soundstart = repdatastr.startswith(" Sound")
-        # print(tempstart, humstart, lightstart, soundstart)
-        # print(x)
+
         # current time and date
         time_hhmmss = time.strftime('%H:%M:%S')
         date_mmddyyyy = time.strftime('%Y/%m/%d')
@@ -66,7 +63,8 @@ while 1:
             linenumber = 2
 
         conn.commit()
-        # insert record
+
+        # if you want you can insert record to firebase
         # data = {'date': date_mmddyyyy,
         #         'time': time_hhmmss, 'value': repdatastr}
         # result = requests.post(
