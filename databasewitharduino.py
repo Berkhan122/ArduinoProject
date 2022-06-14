@@ -4,8 +4,8 @@ import psycopg2
 
 
 ser = serial.Serial('COM6', 9600, timeout=0)
-conn = psycopg2.connect(database="GorselProg3", user="postgres",
-                        password='bzc96', host='127.0.0.1', port='5432')
+conn = psycopg2.connect(database="", user="postgres",
+                        password='', host='127.0.0.1', port='5432')
 
 cur = conn.cursor()
 fixed_interval = 1
@@ -23,14 +23,12 @@ while 1:
         soundstart = repdatastr.startswith(" Sound")
         ratiostart = repdatastr.startswith(" Rs/")
 
-        # current time and date
+       
         time_hhmmss = time.strftime('%H:%M:%S')
         date_mmddyyyy = time.strftime('%Y/%m/%d')
 
-        # current location name
+        
         Data_Location = 'Ankara'
-        # print(repdatastr, ',', time_hhmmss, ',',
-        #       date_mmddyyyy, ',', Data_Location)
 
         if(tempstart):
             repdatastr = repdatastr[15:]
@@ -66,14 +64,6 @@ while 1:
 
         conn.commit()
 
-        # if you want you can insert record to firebase
-        # data = {'date': date_mmddyyyy,
-        #         'time': time_hhmmss, 'value': repdatastr}
-        # result = requests.post(
-        #     firebase_url + '/' + temperature_location + '/temperature.json', data=json.dumps(data))
-
-        # print('Record inserted. Result Code = ',
-        #       str(result.status_code), ',', result.text)
         time.sleep(fixed_interval)
     except IOError:
         print('Error! Something went wrong.')
