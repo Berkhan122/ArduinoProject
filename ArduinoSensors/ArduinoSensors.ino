@@ -11,6 +11,7 @@ void setup(){
 }
 
 void loop(){
+
   
   
   int chk = DHT.read11(DHT11_PIN);
@@ -53,5 +54,22 @@ void loop(){
   Serial.print  ("Sound - ");
   Serial.println (dbV) ;   
   //Serial.println  ("db");
+
+  float sensor_volt; 
+  float RS_gas; 
+  float ratio; 
+  float R0 = 0.91;
+
+  int sensorValue = analogRead(A2); 
+  sensor_volt = ((float)sensorValue / 1024) * 5.0; 
+  RS_gas = (5.0 - sensor_volt) / sensor_volt;
+
+  ratio = RS_gas / R0;
+
+  Serial.print("Rs/R0 = "); 
+  Serial.println(ratio); 
+  
+
+  
   delay(1000);
 }

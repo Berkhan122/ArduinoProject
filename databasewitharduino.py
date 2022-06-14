@@ -5,7 +5,7 @@ import psycopg2
 
 ser = serial.Serial('COM6', 9600, timeout=0)
 conn = psycopg2.connect(database="GorselProg3", user="postgres",
-                        password='', host='127.0.0.1', port='5432')
+                        password='bzc96', host='127.0.0.1', port='5432')
 
 cur = conn.cursor()
 fixed_interval = 1
@@ -21,6 +21,7 @@ while 1:
         humstart = repdatastr.startswith(" Hum")
         lightstart = repdatastr.startswith(" Light")
         soundstart = repdatastr.startswith(" Sound")
+        ratiostart = repdatastr.startswith(" Rs/")
 
         # current time and date
         time_hhmmss = time.strftime('%H:%M:%S')
@@ -33,34 +34,35 @@ while 1:
 
         if(tempstart):
             repdatastr = repdatastr[15:]
-            print(repdatastr)
             cur.execute(
                 '''INSERT INTO temperature (temperature, datadate, datalocation, datatime) Values (%s, %s,%s, %s)''', (float(repdatastr), date_mmddyyyy, Data_Location, time_hhmmss))
-            linenumber += 1
-            print("record inserted")
+
+            print("record inserted to temperature", repdatastr)
         elif(humstart):
             repdatastr = repdatastr[12:]
-            print(repdatastr)
             cur.execute(
                 '''INSERT INTO humidity (humidity, datadate, datalocation, datatime) Values (%s, %s,%s, %s)''', (float(repdatastr), date_mmddyyyy, Data_Location, time_hhmmss))
-            linenumber += 1
-            print("record inserted")
+
+            print("record inserted to humidity", repdatastr)
         elif(lightstart):
             repdatastr = repdatastr[9:]
-            print(repdatastr)
             cur.execute(
                 '''INSERT INTO light (light, datadate, datalocation, datatime) Values (%s, %s,%s, %s)''', (float(repdatastr), date_mmddyyyy, Data_Location, time_hhmmss))
-            linenumber += 1
-            print("record inserted")
+
+            print("record inserted to light", repdatastr)
         elif(soundstart):
             repdatastr = repdatastr[9:]
-            print(repdatastr)
             cur.execute(
                 '''INSERT INTO sound (sound, datadate, datalocation, datatime) Values (%s, %s,%s, %s)''', (float(repdatastr), date_mmddyyyy, Data_Location, time_hhmmss))
-            linenumber += 1
-            print("record inserted")
+
+            print("record inserted to sound", repdatastr)
+        elif(ratiostart):
+            repdatastr = repdatastr[9:]
+            cur.execute(
+                '''INSERT INTO mq9 (ratio, datadate, datalocation, datatime) Values (%s, %s,%s, %s)''', (float(repdatastr), date_mmddyyyy, Data_Location, time_hhmmss))
+            print("record inserted to mq9", repdatastr)
         else:
-            linenumber = 2
+            print("Record empty")
 
         conn.commit()
 
